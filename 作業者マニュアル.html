@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>採用管理システム 作業者マニュアル</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --surface: #161b22;
+            --surface2: #21262d;
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #e6edf3;
+            --text2: #8b949e;
+            --purple: #a371f7;
+            --blue: #58a6ff;
+            --green: #3fb950;
+            --yellow: #d29922;
+            --orange: #f78166;
+            --teal: #39d353;
+            --red: #f85149;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 3px;
+        }
+
+        /* Layout */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            min-width: 260px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-logo {
+            padding: 20px 20px 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-logo .badge {
+            display: inline-block;
+            background: rgba(163, 113, 247, 0.15);
+            border: 1px solid rgba(163, 113, 247, 0.3);
+            color: var(--purple);
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        .sidebar-logo h2 {
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .sidebar-nav {
+            padding: 10px 0;
+            flex: 1;
+        }
+
+        .nav-label {
+            padding: 8px 18px 3px;
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: var(--text2);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 7px 18px;
+            font-size: 13px;
+            color: var(--text2);
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: all .15s;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+        }
+
+        .nav-item.active {
+            border-left-color: var(--purple);
+            background: rgba(163, 113, 247, 0.08);
+            color: var(--text);
+        }
+
+        .nav-num {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .sidebar-tip {
+            margin: 10px 14px 14px;
+            background: rgba(63, 185, 80, 0.08);
+            border: 1px solid rgba(63, 185, 80, 0.2);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .sidebar-tip strong {
+            color: var(--green);
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        /* Main */
+        .main {
+            margin-left: 260px;
+            flex: 1;
+        }
+
+        .main-inner {
+            max-width: 860px;
+            padding: 44px 44px 80px;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, rgba(163, 113, 247, .1) 0%, rgba(88, 166, 255, .05) 100%);
+            border: 1px solid rgba(163, 113, 247, .2);
+            border-radius: 14px;
+            padding: 32px 36px;
+            margin-bottom: 44px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(163, 113, 247, .12), transparent 70%);
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(163, 113, 247, .15);
+            border: 1px solid rgba(163, 113, 247, .3);
+            color: var(--purple);
+            border-radius: 20px;
+            padding: 3px 13px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .hero h1 {
+            font-size: 30px;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 14px;
+            color: var(--text2);
+            line-height: 1.8;
+            max-width: 580px;
+        }
+
+        .hero-tags {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .hero-tag {
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 52px;
+            scroll-margin-top: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-num {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+
+        .section-header h2 {
+            font-size: 21px;
+            font-weight: 900;
+        }
+
+        .section-header .sub {
+            font-size: 13px;
+            color: var(--text2);
+            margin-top: 1px;
+        }
+
+        /* Task box */
+        .task-box {
+            border-radius: 11px;
+            padding: 18px 22px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .task-box.auto {
+            background: rgba(63, 185, 80, .05);
+            border-color: rgba(63, 185, 80, .2);
+        }
+
+        .task-box.manual {
+            background: rgba(88, 166, 255, .05);
+            border-color: rgba(88, 166, 255, .2);
+        }
+
+        .task-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border-radius: 5px;
+            padding: 2px 9px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .task-box.auto .task-label {
+            background: rgba(63, 185, 80, .15);
+            color: var(--green);
+        }
+
+        .task-box.manual .task-label {
+            background: rgba(88, 166, 255, .15);
+            color: var(--blue);
+        }
+
+        .task-action {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .task-desc {
+            font-size: 13px;
+            color: var(--text2);
+        }
+
+        /* Flow chart */
+        .flow-chart {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            padding: 22px;
+            margin: 18px 0;
+        }
+
+        .flow-chart h4 {
+            font-size: 12px;
+            letter-spacing: 1px;
+            color: var(--text2);
+            margin-bottom: 18px;
+        }
+
+        .flow-row {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            flex-wrap: wrap;
+        }
+
+        .flow-node {
+            flex: 1;
+            min-width: 100px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 12px 14px;
+            text-align: center;
+            position: relative;
+        }
+
+        .fn-icon {
+            font-size: 20px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .fn-label {
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .fn-sub {
+            font-size: 11px;
+            color: var(--text2);
+            line-height: 1.5;
+        }
+
+        .flow-node.auto-node {
+            background: rgba(63, 185, 80, .06);
+            border-color: rgba(63, 185, 80, .2);
+        }
+
+        .flow-node.manual-node {
+            background: rgba(88, 166, 255, .06);
+            border-color: rgba(88, 166, 255, .2);
+        }
+
+        .flow-node.highlight {
+            background: rgba(163, 113, 247, .09);
+            border-color: rgba(163, 113, 247, .3);
+        }
+
+        .flow-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 7px;
+            color: var(--text2);
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .flow-arrow-down {
+            display: flex;
+            justify-content: center;
+            color: var(--text2);
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        .flow-branch {
+            display: flex;
+            gap: 10px;
+            margin-top: 0;
+        }
+
+        .flow-branch-item {
+            flex: 1;
+            border-radius: 9px;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+        }
+
+        .fbi-label {
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            padding: 2px 7px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .fbi-content {
+            font-size: 12px;
+            color: var(--text2);
+            line-height: 1.6;
+        }
+
+        .branch-ok {
+            background: rgba(63, 185, 80, .06);
+            border-color: rgba(63, 185, 80, .2);
+        }
+
+        .branch-ok .fbi-label {
+            background: rgba(63, 185, 80, .15);
+            color: var(--green);
+        }
+
+        .branch-ng {
+            background: rgba(247, 129, 102, .06);
+            border-color: rgba(247, 129, 102, .2);
+        }
+
+        .branch-ng .fbi-label {
+            background: rgba(247, 129, 102, .15);
+            color: var(--orange);
+        }
+
+        .branch-nr {
+            background: rgba(88, 166, 255, .06);
+            border-color: rgba(88, 166, 255, .2);
+        }
+
+        .branch-nr .fbi-label {
+            background: rgba(88, 166, 255, .15);
+            color: var(--blue);
+        }
+
+        .branch-bk {
+            background: rgba(255, 255, 255, .03);
+            border-color: rgba(255, 255, 255, .1);
+        }
+
+        .branch-bk .fbi-label {
+            background: rgba(255, 255, 255, .08);
+            color: var(--text2);
+        }
+
+        /* Alert */
+        .alert {
+            border-radius: 9px;
+            padding: 12px 16px;
+            margin: 14px 0;
+            display: flex;
+            gap: 11px;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .alert.info {
+            background: rgba(88, 166, 255, .07);
+            border: 1px solid rgba(88, 166, 255, .18);
+        }
+
+        .alert.warn {
+            background: rgba(210, 153, 34, .07);
+            border: 1px solid rgba(210, 153, 34, .2);
+        }
+
+        .alert.success {
+            background: rgba(63, 185, 80, .07);
+            border: 1px solid rgba(63, 185, 80, .2);
+        }
+
+        .alert.danger {
+            background: rgba(239, 68, 68, .07);
+            border: 1px solid rgba(239, 68, 68, .2);
+        }
+
+        .alert-icon {
+            font-size: 16px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .alert strong {
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        /* Steps */
+        .step-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 14px;
+        }
+
+        .step-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 32px;
+            flex-shrink: 0;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-line {
+            width: 2px;
+            flex: 1;
+            background: linear-gradient(to bottom, rgba(163, 113, 247, .3), transparent);
+            margin: 4px 0;
+            min-height: 28px;
+        }
+
+        .step-body {
+            padding-bottom: 24px;
+            flex: 1;
+        }
+
+        .step-title {
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 32px;
+            margin-bottom: 6px;
+        }
+
+        /* Input table */
+        .input-table {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .itr {
+            display: flex;
+            align-items: stretch;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .itr:last-child {
+            border-bottom: none;
+        }
+
+        .itc-name {
+            width: 160px;
+            min-width: 160px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, .03);
+            border-right: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text2);
+            display: flex;
+            align-items: center;
+        }
+
+        .itc-val {
+            flex: 1;
+            padding: 10px 14px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .itc-val code {
+            background: rgba(88, 166, 255, .1);
+            border: 1px solid rgba(88, 166, 255, .2);
+            color: var(--blue);
+            border-radius: 4px;
+            padding: 1px 7px;
+            font-size: 12px;
+            font-family: 'SF Mono', monospace;
+        }
+
+        .note {
+            font-size: 12px;
+            color: var(--text2);
+        }
+
+        /* Styled table */
+        .stbl {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+
+        .stbl th {
+            background: var(--surface2);
+            padding: 9px 12px;
+            text-align: left;
+            color: var(--text2);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stbl td {
+            padding: 9px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, .04);
+            vertical-align: top;
+            line-height: 1.6;
+        }
+
+        .stbl tr:last-child td {
+            border-bottom: none;
+        }
+
+        .stbl code {
+            background: rgba(163, 113, 247, .1);
+            border: 1px solid rgba(163, 113, 247, .2);
+            color: var(--purple);
+            border-radius: 4px;
+            padding: 1px 6px;
+            font-size: 12px;
+            font-family: 'SF Mono', monospace;
+        }
+
+        .stbl .you {
+            font-weight: 700;
+            color: var(--orange);
+        }
+
+        .stbl .auto-t {
+            color: var(--text2);
+        }
+
+        /* Method box */
+        .method-box {
+            border-radius: 11px;
+            padding: 20px;
+            margin: 16px 0;
+            border: 1px solid var(--border);
+        }
+
+        .method-box.m1 {
+            background: rgba(63, 185, 80, .05);
+            border-color: rgba(63, 185, 80, .2);
+        }
+
+        .method-box.m2 {
+            background: rgba(88, 166, 255, .05);
+            border-color: rgba(88, 166, 255, .2);
+        }
+
+        .method-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .method-badge {
+            border-radius: 7px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .m1 .method-badge {
+            background: rgba(63, 185, 80, .2);
+            color: var(--green);
+        }
+
+        .m2 .method-badge {
+            background: rgba(88, 166, 255, .2);
+            color: var(--blue);
+        }
+
+        .method-sub {
+            font-size: 13px;
+            color: var(--text2);
+        }
+
+        /* Key cards */
+        .key-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 9px;
+            margin: 10px 0;
+        }
+
+        .key-card {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 12px 14px;
+        }
+
+        .key-card.send-key {
+            border-color: rgba(88, 166, 255, .2);
+        }
+
+        .key-card.auto-key {
+            border-color: rgba(63, 185, 80, .2);
+        }
+
+        .kc-key {
+            font-family: 'SF Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .send-key .kc-key {
+            color: var(--blue);
+        }
+
+        .auto-key .kc-key {
+            color: var(--green);
+        }
+
+        .kc-desc {
+            font-size: 12px;
+            color: var(--text2);
+        }
+
+        /* LINE notification groups */
+        .line-group {
+            border-radius: 11px;
+            overflow: hidden;
+            margin: 16px 0;
+            border: 1px solid var(--border);
+        }
+
+        .line-group-header {
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .line-group-header .group-icon {
+            font-size: 18px;
+        }
+
+        .lgh-main {
+            background: rgba(0, 185, 0, .08);
+        }
+
+        .lgh-doc {
+            background: rgba(88, 166, 255, .08);
+        }
+
+        .lgh-log {
+            background: rgba(139, 148, 158, .08);
+        }
+
+        .lgh-err {
+            background: rgba(248, 81, 73, .08);
+        }
+
+        .line-group .stbl {
+            margin: 0;
+        }
+
+        .line-group .stbl th {
+            background: rgba(255, 255, 255, .03);
+        }
+
+        /* FAQ */
+        .faq-item {
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            overflow: hidden;
+            margin-bottom: 9px;
+        }
+
+        .faq-q {
+            padding: 13px 16px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background .15s;
+        }
+
+        .faq-q:hover {
+            background: rgba(255, 255, 255, .03);
+        }
+
+        .faq-q .ch {
+            transition: transform .2s;
+            color: var(--text2);
+            font-size: 12px;
+        }
+
+        .faq-q.open .ch {
+            transform: rotate(180deg);
+        }
+
+        .faq-a {
+            padding: 0 16px;
+            font-size: 13px;
+            color: var(--text2);
+            line-height: 1.9;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .3s ease, padding .2s;
+        }
+
+        .faq-a.open {
+            max-height: 300px;
+            padding: 0 16px 14px;
+        }
+
+        .faq-a code {
+            background: rgba(163, 113, 247, .1);
+            border: 1px solid rgba(163, 113, 247, .2);
+            color: var(--purple);
+            border-radius: 4px;
+            padding: 1px 6px;
+            font-size: 12px;
+            font-family: 'SF Mono', monospace;
+        }
+
+        /* Helper */
+        .chip-auto {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(63, 185, 80, .12);
+            border: 1px solid rgba(63, 185, 80, .25);
+            color: var(--green);
+            border-radius: 5px;
+            padding: 1px 8px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .chip-manual {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(88, 166, 255, .12);
+            border: 1px solid rgba(88, 166, 255, .25);
+            color: var(--blue);
+            border-radius: 5px;
+            padding: 1px 8px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layout">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                <div class="badge">HREA 作業者向け</div>
+                <h2>採用管理システム<br>作業者マニュアル</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-label">CONTENTS</div>
+                <a href="#s1" class="nav-item active">
+                    <div class="nav-num" style="background:rgba(163,113,247,.2);color:#a371f7">1</div>新規応募
+                </a>
+                <a href="#s2" class="nav-item">
+                    <div class="nav-num" style="background:rgba(88,166,255,.2);color:#58a6ff">2</div>説明会の設定
+                </a>
+                <a href="#s3" class="nav-item">
+                    <div class="nav-num" style="background:rgba(63,185,80,.2);color:#3fb950">3</div>説明会後の対応
+                </a>
+                <a href="#s4" class="nav-item">
+                    <div class="nav-num" style="background:rgba(247,129,102,.2);color:#f78166">4</div>日程が合わなかった時
+                </a>
+                <a href="#s5" class="nav-item">
+                    <div class="nav-num" style="background:rgba(57,211,83,.2);color:#39d353">5</div>前日リマインド
+                </a>
+                <a href="#s6" class="nav-item">
+                    <div class="nav-num" style="background:rgba(210,153,34,.2);color:#d29922">6</div>面接判定後
+                </a>
+                <a href="#s7" class="nav-item">
+                    <div class="nav-num" style="background:rgba(139,148,158,.15)">7</div>手動メール送信キー
+                </a>
+                <a href="#s8" class="nav-item">
+                    <div class="nav-num" style="background:rgba(0,185,0,.15);color:#00b900">8</div>LINE通知一覧
+                </a>
+                <a href="#faq" class="nav-item">
+                    <div class="nav-num" style="background:rgba(255,255,255,.08)">💬</div>よくある質問
+                </a>
+            </nav>
+            <div class="sidebar-tip">
+                <strong>💡 基本ルール</strong>
+                メール・カレンダー・Meet作成は<strong>全て自動</strong>。あなたがやることは最小限！
+            </div>
+        </div>
+
+        <!-- Main -->
+        <div class="main">
+            <div class="main-inner">
+
+                <!-- Hero -->
+                <div class="hero">
+                    <div class="hero-badge">⚡ 採用管理システム v2026</div>
+                    <h1>作業者マニュアル</h1>
+                    <p>このシステムは<strong>ほぼ自動</strong>で動いています。記載がない部分（メール送信・カレンダー作成・Meet発行）は全て自動です。</p>
+                    <div class="hero-tags">
+                        <div class="hero-tag"><span>🤖</span><span>メール送信 <b>自動</b></span></div>
+                        <div class="hero-tag"><span>📅</span><span>カレンダー作成 <b>自動</b></span></div>
+                        <div class="hero-tag"><span>🔗</span><span>Meet発行 <b>自動</b></span></div>
+                        <div class="hero-tag"><span>📣</span><span>LINE通知 <b>自動</b></span></div>
+                    </div>
+                </div>
+
+                <!-- S1 -->
+                <div class="section" id="s1">
+                    <div class="section-header">
+                        <div class="section-num" style="background:rgba(163,113,247,.15);color:#a371f7">1</div>
+                        <div>
+                            <h2>新規応募が来た時</h2>
+                            <div class="sub">書類判定は基本自動反映。ズレた場合のみ確認</div>
+                        </div>
+                    </div>
+
+                    <div class="task-box auto">
+                        <div class="task-label">🤖 あなたがやること</div>
+                        <div class="task-action">ほぼ自動 — 判定が振り分けられなかった場合のみ確認</div>
+                        <div class="task-desc">応募情報の転記・書類判定は別システムで自動反映。以下の4つは対応不要です。</div>
+                    </div>
+
+                    <div class="flow-chart">
+                        <h4>📊 書類判定と自動処理の対応</h4>
+                        <div class="flow-row">
+                            <div class="flow-node highlight" style="max-width:140px;">
+                                <span class="fn-icon">📝</span>
+                                <div class="fn-label">書類判定</div>
+                                <div class="fn-sub">自動反映</div>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div style="flex:2;display:flex;flex-direction:column;gap:8px;">
+                                <div class="flow-branch">
+                                    <div class="flow-branch-item branch-ok"><span class="fbi-label">合格（一次面接）</span>
+                                        <div class="fbi-content">希望日で面接を<strong>自動セット</strong>・案内メール送信</div>
+                                    </div>
+                                    <div class="flow-branch-item branch-ok"><span class="fbi-label">合格（説明会）</span>
+                                        <div class="fbi-content">説明会日程を<strong>自動セット</strong>・案内メール送信</div>
+                                    </div>
+                                </div>
+                                <div class="flow-branch">
+                                    <div class="flow-branch-item branch-ng"><span class="fbi-label">不合格</span>
+                                        <div class="fbi-content">不合格通知メールを<strong>自動送信</strong></div>
+                                    </div>
+                                    <div class="flow-branch-item branch-ng"><span class="fbi-label">ブラックリスト</span>
+                                        <div class="fbi-content">不合格通知メールを<strong>自動送信</strong>（不合格と同じ）</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert warn">
+                        <div class="alert-icon">⚠️</div>
+                        <div>上記以外の判定が入っていた場合は、応募内容を確認して<strong>適切な書類判定を手動で選択</strong>してください。</div>
+                    </div>
+                </div>
+
+                <!-- S2 -->
+                <div class="section" id="s2">
+                    <div class="section-header">
+                        <div class="section-num" style="background:rgba(88,166,255,.15);color:#58a6ff">2</div>
+                        <div>
+                            <h2>説明会の設定</h2>
+                            <div class="sub">全自動 — 何もしなくてOK</div>
+                        </div>
+                    </div>
+
+                    <div class="task-box auto">
+                        <div class="task-label">🤖 あなたがやること</div>
+                        <div class="task-action">なし（全自動）</div>
+                        <div class="task-desc">候補者がフォーム回答 → 空き枠検索 → カレンダー作成 → 案内メール送信まで全自動</div>
+                    </div>
+
+                    <div class="flow-chart">
+                        <h4>⚡ 自動処理フロー</h4>
+                        <div class="flow-row">
+                            <div class="flow-node auto-node"><span class="fn-icon">📋</span>
+                                <div class="fn-label">フォーム回答</div>
+                                <div class="fn-sub">候補者が希望日入力</div>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-node auto-node"><span class="fn-icon">🔍</span>
+                                <div class="fn-label">空き枠検索</div>
+                                <div class="fn-sub">カレンダー照合</div>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-node auto-node"><span class="fn-icon">📅</span>
+                                <div class="fn-label">カレンダー作成</div>
+                                <div class="fn-sub">自動セット</div>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-node auto-node"><span class="fn-icon">📧</span>
+                                <div class="fn-label">案内メール</div>
+                                <div class="fn-sub">自動送信</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- S3 -->
+                <div class="section" id="s3">
+                    <div class="section-header">
+                        <div class="section-num" style="background:rgba(63,185,80,.15);color:#3fb950">3</div>
+                        <div>
+                            <h2>説明会後の対応</h2>
+                            <div class="sub">カジュアル判定を入力するだけ → あとは自動</div>
+                        </div>
+                    </div>
+
+                    <div class="task-box manual">
+                        <div class="task-label">✏️ あなたがやること</div>
+                        <div class="task-action">管理シートの「カジュアル判定」に結果を入力する</div>
+                        <div class="task-desc">これだけ！入力後はシステムが全自動で処理します</div>
+                    </div>
+
+                    <div class="flow-chart">
+                        <h4>📊 カジュアル判定後の分岐</h4>
+                        <div style="display:flex;flex-direction:column;align-items:center;">
+                            <div class="flow-node manual-node" style="max-width:220px;width:100%;margin:0 auto;">
+                                <span class="fn-icon">✏️</span>
+                                <div class="fn-label">カジュアル判定を入力</div>
+                                <div class="fn-sub">管理シートで操作</div>
+                            </div>
+                            <div class="flow-arrow-down">↓</div>
+                            <div class="flow-branch" style="width:100%;">
+                                <div class="flow-branch-item branch-ok">
+                                    <span class="fbi-label">合格</span>
+                                    <div class="fbi-content">候補者の希望日で一次面接を<strong>自動セット</strong><br>案内メールも自動送信</div>
+                                </div>
+                                <div class="flow-branch-item branch-ng">
+                                    <span class="fbi-label">不合格</span>
+                                    <div class="fbi-content">翌日に不合格通知を<strong>自動送信</strong></div>
+                                </div>
+                                <div class="flow-branch-item branch-nr">
+                                    <span class="fbi-label">辞退</span>
+                                    <div class="fbi-content">お礼メールまで<strong>全自動</strong>（対応不要）</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert info">
+                        <div class="alert-icon">📣</div>
+                        <div>フォーム回答時に LINE（書類選考グループ）へ内容が自動通知されます。ログ転記・希望日も自動で完了済みです。</div>
+                    </div>
+                </div>
+
+                <!-- S4 -->
+                <div class="section" id="s4">
+                    <div class="section-header">
+                        <div class="section-num" style="background:rgba(247,129,102,.15);color:#f78166">4</div>
+                        <div>
+                            <h2>面接の日程が合わなかった時</h2>
+                            <div class="sub">LINEに「日程調整依頼」が届いたら対応</div>
+                        </div>
+                    </div>
+
+                    <div class="alert warn">
+                        <div class="alert-icon">📣</div>
+                        <div><strong>LINEに通知が届きます</strong>「日程調整依頼」通知が届いたら、以下の<strong>どちらかの方法</strong>で対応してください。</div>
+                    </div>
+
+                    <!-- Method 1 -->
+                    <div class="method-box m1">
+                        <div class="method-head">
+                            <span class="method-badge">方法① 【推奨】リスケフォームを送る</span>
+                            <span class="method-sub">ほぼ自動・簡単</span>
+                        </div>
+                        <div class="task-box manual" style="margin:0 0 14px;background:rgba(88,166,255,.05);">
+                            <div class="task-label">✏️ あなたがやること</div>
+                            <div class="task-action">「選考案内」列にキーを入力する — それだけ！</div>
+                        </div>
+                        <table class="stbl">
+                            <thead>
+                                <tr>
+                                    <th>状況</th>
+                                    <th>選考案内に入力する値</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>初回応募の候補者</td>
+                                    <td><code>初回一次調整依頼</code></td>
+                                </tr>
+                                <tr>
+                                    <td>説明会後の候補者</td>
+                                    <td><code>説明会後一次調整依頼</code></td>
+                                </tr>
+                                <tr>
+                                    <td>リスケの候補者</td>
+                                    <td><code>一次リスケ調整依頼</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="flow-chart" style="background:transparent;border:none;padding:0;margin-top:14px;">
+                            <div class="flow-row">
+                                <div class="flow-node auto-node" style="padding:9px;"><span class="fn-icon"
+                                        style="font-size:16px">📧</span>
+                                    <div class="fn-label" style="font-size:11px">リスケフォーム<br>付きメール送信</div>
+                                </div>
+                                <div class="flow-arrow" style="font-size:13px">→</div>
+                                <div class="flow-node auto-node" style="padding:9px;"><span class="fn-icon"
+                                        style="font-size:16px">📋</span>
+                                    <div class="fn-label" style="font-size:11px">候補者が<br>希望日回答</div>
+                                </div>
+                                <div class="flow-arrow" style="font-size:13px">→</div>
+                                <div class="flow-node auto-node" style="padding:9px;"><span class="fn-icon"
+                                        style="font-size:16px">📅</span>
+                                    <div class="fn-label" style="font-size:11px">カレンダー<br>自動作成</div>
+                                </div>
+                                <div class="flow-arrow" style="font-size:13px">→</div>
+                                <div class="flow-node auto-node" style="padding:9px;"><span class="fn-icon"
+                                        style="font-size:16px">📧</span>
+                                    <div class="fn-label" style="font-size:11px">案内メール<br>自動送信</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Method 2 -->
+                    <div class="method-box m2">
+                        <div class="method-head">
+                            <span class="method-badge">方法② 面接官が決めた日程を手入力する</span>
+                        </div>
+
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-left">
+                                    <div class="step-circle">1</div>
+                                    <div class="step-line"></div>
+                                </div>
+                                <div class="step-body">
+                                    <div class="step-title">日程を入力する</div>
+                                    <div class="input-table">
+                                        <div class="itr">
+                                            <div class="itc-name">一次予定日</div>
+                                            <div class="itc-val"><code>2026/03/15</code><span class="note">← 面接日</span>
+                                            </div>
+                                        </div>
+                                        <div class="itr">
+                                            <div class="itc-name">一次予定時間</div>
+                                            <div class="itc-val"><code>14:00</code><span class="note">← 開始時間</span>
+                                            </div>
+                                        </div>
+                                        <div class="itr">
+                                            <div class="itc-name">一次面接官</div>
+                                            <div class="itc-val"><code>山田 太郎</code><span class="note">← 面接官名</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="alert warn" style="margin-top:8px;">
+                                        <div class="alert-icon">⚠️</div>
+                                        <div>リスケの場合は <strong>一次Meet</strong> 列の既存URLを<strong>削除</strong>してください</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-left">
+                                    <div class="step-circle">2</div>
+                                    <div class="step-line"></div>
+                                </div>
+                                <div class="step-body">
+                                    <div class="step-title">選考案内を設定する</div>
+                                    <div class="input-table">
+                                        <div class="itr">
+                                            <div class="itc-name">ステータス</div>
+                                            <div class="itc-val"><code>一次面接調整</code></div>
+                                        </div>
+                                        <div class="itr">
+                                            <div class="itc-name">選考案内</div>
+                                            <div class="itc-val"
+                                                style="flex-direction:column;align-items:flex-start;gap:5px">
+                                                <span class="note">状況に応じて選択 ↓</span>
+                                                <code>初回一次設定案内</code>
+                                                <code>説明会後一次設定案内</code>
+                                                <code>一次リスケ設定案内</code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-left">
+                                    <div class="step-circle">3</div>
+                                </div>
+                                <div class="step-body">
+                                    <div class="step-title">自動カレンダー作成を起動する</div>
+                                    <div class="input-table">
+                                        <div class="itr">
+                                            <div class="itc-name">EAステータス</div>
+                                            <div class="itc-val"><code>手動カレンダー待ち</code></div>
+                                        </div>
+                                    </div>
+                                    <div class="alert success" style="margin-top:8px;">
+                                        <div class="alert-icon">✅</div>
+                                        <div><strong>完了！</strong>カレンダー＋Meetが自動作成され、案内メールが届きます。自分でカレンダーを作る必要はありません。</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- S5 -->
+                <div class="section" id="s5">
+                    <div class="section-header">
+                        <div class="section-num" style="background:rgba(57,211,83,.15);color:#39d353">5</div>
+                        <div>
+                            <h2>前日リマインド</h2>
+                            <div class="sub">全自動 — 何もしなくてOK</div>
+                        </div>
+                    </div>
+
+                    <div class="task-box auto">
+                        <div class="task-label">🤖 あなたがやること</div>
+                        <div class="task-action">なし（全自動）</div>
+                        <div class="task-desc">毎日10時に自動チェックが走り、翌日が面接・説明会の候補者にリマインドメールが送信されます</div>
+                    </div>
+
+                    <div class="flow-chart">
+                        <h4>⏰ 前日リマインドの対象と案内URL</h4>
+                        <table class="stbl">
+                            <thead>
+                                <tr>
+                                    <th>対象</th>
+                                    <th>案内されるURL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>説明会（カジュアル面談設定 / 会社説明会）</td>
+                                    <td>面接官マスタの固定Zoom</td>
+                                </tr>
+                                <tr>
+                                    <td>一次面接（一次面接設定 / 各面接官）</td>
+                                    <td>一次MeetのURL</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="alert info">
+                        <div class="alert-icon">💡</div>
+                        <div>送信後、選考案内が <strong>「送信済：前日リマインド」</strong> に自動で書き換わります。</div>
+                    </div>
+                </div>
+
+                <!-- S6 -->
+                <div class="section" id="s6">
+                    <div class="section-header">
+                        <div class="section-num" style="background:rgba(210,153,34,.15);color:#d29922">6</div>
+                        <div>
+                            <h2>面接判定後</h2>
+                            <div class="sub">面接官がフォームで送信 → 全自動</div>
+                        </div>
+                    </div>
+
+                    <div class="task-box auto">
+                        <div class="task-label">🤖 あなたがやること</div>
+                        <div class="task-action">なし（面接官がフォームで結果を送信）</div>
+                        <div class="task-desc">面接官が判定フォームを送信するとシステムが自動で管理シートに反映します</div>
+                    </div>
+
+                    <div class="flow-chart">
+                        <h4>📊 判定後の自動処理</h4>
+                        <div class="flow-branch">
+                            <div class="flow-branch-item branch-ok">
+                                <span class="fbi-label">合格</span>
+                                <div class="fbi-content">次の選考ステップへ<strong>自動遷移</strong><br>次回日程入力済みなら自動設定</div>
+                            </div>
+                            <div class="flow-branch-item branch-ng">
+                                <span class="fbi-label">不合格</span>
+                                <div class="fbi-content">翌日に不合格通知を<strong>自動送信</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- S7 -->
+                <div class="section" id="s7">
+                    <div class="section-header">
+                        <div class="section-num" style="background:rgba(139,148,158,.12)">7</div>
+                        <div>
+                            <h2>手動でメール通知を送りたい時</h2>
+                            <div class="sub">「選考案内」列のプルダウンから選択 → 5分以内に自動送信</div>
+                        </div>
+                    </div>
+
+                    <p style="font-size:14px;color:var(--text2);margin-bottom:14px;">使いたいキーを <strong
+                            style="color:var(--purple)">選考案内列のプルダウンから選択</strong> するだけで、対応するメールが自動送信されます。</p>
+
+                    <h3 style="font-size:14px;margin-bottom:10px;color:var(--text2)">📧 通知系（メールをそのまま送信）</h3>
+                    <div class="key-grid">
+                        <div class="key-card send-key">
+                            <div class="kc-key">書類不合格通知</div>
+                            <div class="kc-desc">書類選考不合格のお知らせ</div>
+                        </div>
+                        <div class="key-card send-key">
+                            <div class="kc-key">面接不合格通知</div>
+                            <div class="kc-desc">面接不合格のお知らせ</div>
+                        </div>
+                        <div class="key-card send-key">
+                            <div class="kc-key">説明会不合格通知</div>
+                            <div class="kc-desc">説明会後の不合格お知らせ</div>
+                        </div>
+                        <div class="key-card send-key">
+                            <div class="kc-key">説明会参加お礼</div>
+                            <div class="kc-desc">説明会辞退者へのお礼</div>
+                        </div>
+                        <div class="key-card send-key">
+                            <div class="kc-key">セールス打診</div>
+                            <div class="kc-desc">セールス職への打診メール</div>
+                        </div>
+                        <div class="key-card send-key">
+                            <div class="kc-key">過去未着座確認</div>
+                            <div class="kc-desc">過去応募者への再確認</div>
+                        </div>
+                        <div class="key-card send-key">
+                            <div class="kc-key">重複応募案内</div>
+                            <div class="kc-desc">重複応募のお知らせ</div>
+                        </div>
+                        <div class="key-card send-key">
+                            <div class="kc-key">説明会調整依頼</div>
+                            <div class="kc-desc">説明会の日程調整フォームを送付</div>
+                        </div>
+                        <div class="key-card send-key">
+                            <div class="kc-key">初回一次調整依頼</div>
+                            <div class="kc-desc">一次面接の日程調整フォームを送付</div>
+                        </div>
+                        <div class="key-card send-key">
+                            <div class="kc-key">説明会後一次調整依頼</div>
+                            <div class="kc-desc">説明会後の一次日程調整フォームを送付</div>
+                        </div>
+                        <div class="key-card send-key">
+                            <div class="kc-key">一次リスケ調整依頼</div>
+                            <div class="kc-desc">一次面接リスケの日程調整フォームを送付</div>
+                        </div>
+                    </div>
+
+                    <h3 style="font-size:14px;margin:20px 0 10px;color:var(--text2)">⚙️ 面接生成系（カレンダー＋Meet＋メールが自動セット）</h3>
+                    <div class="alert warn" style="margin-bottom:10px;">
+                        <div class="alert-icon">⚠️</div>
+                        <div>使う前に確認：<strong>一次予定日・面接官・EAステータス「手動カレンダー待ち」</strong>が揃っている状態で入力してください</div>
+                    </div>
+                    <div class="key-grid">
+                        <div class="key-card auto-key">
+                            <div class="kc-key">説明会設定案内</div>
+                            <div class="kc-desc">説明会のカレンダー設定＋案内</div>
+                        </div>
+                        <div class="key-card auto-key">
+                            <div class="kc-key">初回一次設定案内</div>
+                            <div class="kc-desc">初回一次面接のカレンダー設定＋案内</div>
+                        </div>
+                        <div class="key-card auto-key">
+                            <div class="kc-key">説明会後一次設定案内</div>
+                            <div class="kc-desc">説明会後の一次面接カレンダー設定＋案内</div>
+                        </div>
+                        <div class="key-card auto-key">
+                            <div class="kc-key">説明会リスケ設定案内</div>
+                            <div class="kc-desc">説明会リスケのカレンダー設定＋案内</div>
+                        </div>
+                        <div class="key-card auto-key">
+                            <div class="kc-key">一次リスケ設定案内</div>
+                            <div class="kc-desc">一次面接リスケのカレンダー設定＋案内</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- S8 LINE -->
+                <div class="section" id="s8">
+                    <div class="section-header">
+                        <div class="section-num" style="background:rgba(0,185,0,.12);color:#00b900">8</div>
+                        <div>
+                            <h2>LINE通知の一覧と対応</h2>
+                            <div class="sub">届いた通知の種類と、誰が何をするか</div>
+                        </div>
+                    </div>
+
+                    <!-- Main group -->
+                    <div class="line-group">
+                        <div class="line-group-header lgh-main">
+                            <span class="group-icon">🟢</span>メイングループ に届く通知
+                        </div>
+                        <table class="stbl">
+                            <thead>
+                                <tr>
+                                    <th>通知</th>
+                                    <th>いつ届く</th>
+                                    <th>対応</th>
+                                    <th>やること</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>🗓️【日程調整依頼】</td>
+                                    <td>候補者の希望日で空き枠が見つからなかった時</td>
+                                    <td><span class="you">あなた</span></td>
+                                    <td>「4. 日程が合わなかった時」の方法①か②で対応</td>
+                                </tr>
+                                <tr>
+                                    <td>🗓️【リスケ日程調整依頼】</td>
+                                    <td>リスケ後も空き枠が見つからなかった時</td>
+                                    <td><span class="you">あなた</span></td>
+                                    <td>同上</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Doc group -->
+                    <div class="line-group">
+                        <div class="line-group-header lgh-doc">
+                            <span class="group-icon">📋</span>書類選考グループ に届く通知
+                        </div>
+                        <table class="stbl">
+                            <thead>
+                                <tr>
+                                    <th>通知</th>
+                                    <th>いつ届く</th>
+                                    <th>対応</th>
+                                    <th>やること</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>📋【説明会アンケート回答】</td>
+                                    <td>候補者が説明会後フォームを回答した時</td>
+                                    <td><span class="you">あなた</span></td>
+                                    <td>回答内容を確認し、管理シートの <code
+                                            style="background:rgba(163,113,247,.1);color:#a371f7;border-radius:3px;padding:1px 5px;font-size:11px">カジュアル判定</code>
+                                        に結果を入力</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Log group -->
+                    <div class="line-group">
+                        <div class="line-group-header lgh-log">
+                            <span class="group-icon">📝</span>ログ用グループ に届く通知
+                        </div>
+                        <table class="stbl">
+                            <thead>
+                                <tr>
+                                    <th>通知</th>
+                                    <th>いつ届く</th>
+                                    <th>対応</th>
+                                    <th>やること</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>面接判定ログ</td>
+                                    <td>面接官が判定フォームを送信した時</td>
+                                    <td><span class="auto-t">対応不要</span></td>
+                                    <td>面接結果の共有用。自動で管理シートにも反映済み</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Error group -->
+                    <div class="line-group">
+                        <div class="line-group-header lgh-err">
+                            <span class="group-icon">⚠️</span>エラー用グループ に届く通知
+                        </div>
+                        <table class="stbl">
+                            <thead>
+                                <tr>
+                                    <th>通知</th>
+                                    <th>いつ届く</th>
+                                    <th>対応</th>
+                                    <th>やること</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>⚠️【一次面接：要日程確認】</td>
+                                    <td>候補者の希望日が遠すぎる時（5日以上先）</td>
+                                    <td><span class="you">あなた</span></td>
+                                    <td>候補者に直近の日程を提案する</td>
+                                </tr>
+                                <tr>
+                                    <td>⚠️【リスケ照合失敗】</td>
+                                    <td>リスケフォームの候補者が管理シートで見つからない時</td>
+                                    <td><span class="you">あなた</span></td>
+                                    <td>管理シートの候補者名・ステータスを確認</td>
+                                </tr>
+                                <tr>
+                                    <td>エラー（フェーズ不一致）</td>
+                                    <td>面接判定フォームの内容とシートのフェーズが合わない時</td>
+                                    <td><span class="you">あなた</span></td>
+                                    <td>管理シートのステータスを確認し手動修正</td>
+                                </tr>
+                                <tr>
+                                    <td>エラー（管理シート不一致）</td>
+                                    <td>面接判定フォームの候補者がシートで見つからない時</td>
+                                    <td><span class="you">あなた</span></td>
+                                    <td>管理シートに候補者がいるか確認</td>
+                                </tr>
+                                <tr>
+                                    <td>エラー（ログ生成失敗）</td>
+                                    <td>AIによる面接ログ生成が失敗した時</td>
+                                    <td><span class="you">あなた</span></td>
+                                    <td>管理シートに手動でログを追記</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="section" id="faq">
+                    <div class="section-header">
+                        <div class="section-num" style="background:rgba(255,255,255,.06)">💬</div>
+                        <div>
+                            <h2>よくある質問</h2>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-q" onclick="tf(this)"><span>Q. メールはいつ送信される？</span><span class="ch">▼</span>
+                        </div>
+                        <div class="faq-a">5分おきに自動チェックが走ります。選考案内を入力してから<strong>最大5分</strong>で送信されます。<br>ただし
+                            <strong>22時〜8時</strong> の間は送信されません（翌朝8時以降に送信）。
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-q" onclick="tf(this)"><span>Q. カレンダーが自動で作成されない</span><span class="ch">▼</span>
+                        </div>
+                        <div class="faq-a"><code>EAステータス</code> が <code>手動カレンダー待ち</code>
+                            になっているか確認してください。なっていれば次の5分チェックで作成されます。</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-q" onclick="tf(this)"><span>Q. 候補者にメールが届かない</span><span class="ch">▼</span>
+                        </div>
+                        <div class="faq-a"><code>選考案内</code> 列を確認してください。「送信済：〇〇」に変わっていれば送信完了です。変わっていない場合は
+                            <code>メールアドレス</code> が空でないか確認してください。
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-q" onclick="tf(this)"><span>Q. 説明会後、合格にしたのに面接が設定されない</span><span
+                                class="ch">▼</span></div>
+                        <div class="faq-a"><code>カジュアル判定</code> に「合格」が入っているか確認してください。自動で <code>ステータス</code>
+                            が「一次面接調整」に変わり、面接マッチングが始まります。希望日の空き枠がない場合はLINEに通知が届きます。</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-q" onclick="tf(this)"><span>Q. 面接の自動日程調整の対象になる面接官は？</span><span
+                                class="ch">▼</span></div>
+                        <div class="faq-a">
+                            <strong>面接官マスタにメールアドレスが登録されている面接官だけ</strong>が自動日程調整の対象です。「会社説明会」などの事務局枠は対象外です。<br><br>
+                            特定の面接官を自動調整から外したい場合は、面接官マスタでその面接官の<strong>メールアドレスを空欄</strong>にしてください（表示名はそのまま使えます）。<br><br>
+                            <span style="color:var(--orange)">⚠️ 自動調整対象外の面接官で面接が発生した場合は、手動でカレンダー設定・メール作成・Zoom案内を行い、選考案内を
+                                <code>手動対応済み</code> にしてください。</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- /main -->
+    </div><!-- /layout -->
+
+    <script>
+function tf(el){
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+const secs=document.querySelectorAll('.section');
+const navs=document.querySelectorAll('.nav-item');
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      navs.forEach(n=>n.classList.remove('active'));
+      const a=document.querySelector(`.nav-item[href="#${e.target.id}"]`);
+      if(a)a.classList.add('active');
+    }
+  });
+},{threshold:0.25});
+secs.forEach(s=>obs.observe(s));
+    </script>
+</body>
+
+</html>
