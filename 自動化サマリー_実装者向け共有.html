@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>採用自動化パイプライン 概要（実装者向け）</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --surface: #ffffff;
+            --bg: #f8fafc;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--surface);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            padding: 2.5rem 3rem;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .subtitle {
+            color: var(--text-sub);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card {
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            color: #334155;
+        }
+
+        .card p {
+            margin: 0;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        .tags {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-sub);
+        }
+
+        .mermaid {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>採用自動化パイプライン 概要</h1>
+        <div class="subtitle">自動化実装者 / エンジニア 向けライト共有資料</div>
+
+        <p>
+            採用活動における「データ転記・日程調整・メール送信・面接録画のサマリー生成」といったオペレーションを、Google Apps Script (GAS)
+            と各種APIを組み合わせてEnd-to-Endで自動化しています。
+        </p>
+
+        <div class="mermaid">
+            graph TD
+            %% 外部システム
+            ATS[求人媒体 等]
+            Cal[Google Calendar/Meet]
+            Mail[Gmail]
+            Line[LINE Messaging API]
+            GCP[Google API / Gemini]
+
+            %% 自動化エンジン
+            GAS((自動化エンジン<br>GAS トリガー処理))
+
+            %% DB
+            Sheets[(マスターDB<br>スプレッドシート)]
+
+            ATS -->|新規応募検知| GAS
+            GAS -->|①自動転記＆書類判定| Sheets
+
+            Sheets -->|②マッチング| GAS
+            GAS <-->|③空き枠確認・予定作成| Cal
+                GAS -->|④ステータス遷移・メール配信| Mail
+
+                GAS <-->|⑤録画文字起こし取得＆要約| GCP
+                    GAS -->|⑥アラート・ログ通知| Line
+        </div>
+
+        <h2>🪄 自動化している主要な機能・フロー</h2>
+
+        <div class="card">
+            <h3>① 応募検知と自動書類判定プロセスの実行</h3>
+            <p>
+                媒体からの応募データを管理シート（DB）に自動転記します。同時に「自動書類判定システム」が稼働し、判定結果をシートに自動反映します。<br>
+                ※ 面接・説明会通過の場合は即座に次の日程調整フローへ移行します。AIやルールエンジンが判定を持ち越した「保留」ステータスになった場合のみ、人間のオペレーターに判断を委ねるように組んでいます。
+            </p>
+            <div class="tags">
+                <span class="tag">自動転記</span>
+                <span class="tag">自動合否判定</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>② 面接官カレンダーの可用性チェッカー＆自動マッチング</h3>
+            <p>
+                書類選考を通過した候補者に対して、面接官（または説明会枠）の Google カレンダーを API 経由で探索します。空きスロットが見つかった場合は即時にカレンダーイベントと Google Meet の URL
+                を自動生成し、データベースに紐付けます。もし空き枠が見つからない場合は、自動的に次のフロー（候補者へリスケフォーム送信、またはLINE通知）へアサインされます。
+            </p>
+            <div class="tags">
+                <span class="tag">Google Calendar API</span>
+                <span class="tag">Meet URL生成</span>
+                <span class="tag">マッチングエンジン</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>③ ステータス駆動型のメール配信エンジン</h3>
+            <p>
+                「書類選考不合格」「面接確定」「リマインド」などのステータス遷移をフックとして、ステータスに応じた適切なテンプレートでメール（Gmail）を自動送信します。<br>
+                なお、面接や説明会の前日（朝10時）には一括でリマインダーを送信するバッチ処理が動いており、逆に深夜帯（22時〜翌8時）は候補者への新規案内メールをキューイングしてブロックし、翌朝に送信する制御を入れています。
+            </p>
+            <div class="tags">
+                <span class="tag">Gmail App API</span>
+                <span class="tag">夜間送付ブロッキング</span>
+                <span class="tag">バッチ配信</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>④ AIによる面接ログの自動生成と評価連携</h3>
+            <p>
+                面接官が Google Meet の録画と文字起こし機能をONにして面接を実施すると、面接終了後に生成された文字起こしテキストを API 経由でサーバー側で取得します。この文字起こしデータを Gemini
+                モデルへプロンプトとともに渡し、面接の所感・評価、候補者の特徴などの要点を抽出した「申し送りログ」を自動作成します。<br>
+                その後、生成されたログテキストは即時に社内の連携用 LINE グループへ自動通知（共有）されます。
+            </p>
+            <div class="tags">
+                <span class="tag">Google Drive API</span>
+                <span class="tag">Gemini API</span>
+                <span class="tag">AI要約生成</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>⑤ バックグラウンドでの例外監視・アラート機構</h3>
+            <p>
+                基本はフルオートですが、「面接官候補が全員埋まっている」「AIログのパースに失敗した」といった例外処理（Exception）や、人間の介入が必要なフェーズ（書類判定保留ステータス等）が発生した際は、即座に
+                LINE Messaging API 経由で専用チャネルにアラートを投げる監視・通知機構を備えています。これにより運用側はアラートが鳴った時だけ作業すれば済むようになります。
+            </p>
+            <div class="tags">
+                <span class="tag">LINE Messaging API</span>
+                <span class="tag">例外監視</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mermaid.js rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.4.0/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+
+</html>
